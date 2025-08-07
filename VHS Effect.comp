@@ -1,0 +1,555 @@
+Composition {
+	CurrentTime = 119,
+	RenderRange = { 0, 119 },
+	GlobalRange = { 0, 119 },
+	CurrentID = 20,
+	HiQ = true,
+	PlaybackUpdateMode = 0,
+	StereoMode = false,
+	Version = "DaVinci Resolve 20.0.1.0006",
+	SavedOutputs = 0,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		FastNoise2 = FastNoise {
+			Inputs = {
+				GlobalOut = Input { Value = 119, },
+				Width = Input { Value = 640, },
+				Height = Input { Value = 480, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				XScale = Input { Value = 345678, },
+				SeetheRate = Input { Value = 120, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 191.333, -63.5455 } },
+		},
+		LumaNoise = Merge {
+			NameSet = true,
+			Inputs = {
+				Blend = Input { Value = 0.8, },
+				Background = Input {
+					SourceOp = "FastNoise2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "JPEGDamage1",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 52.6667, -67.7879 } },
+		},
+		LumaBlur = Blur {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				LockXY = Input { Value = 0, },
+				XBlurSize = Input { Value = 5, },
+				YBlurSize = Input { Value = 3, },
+				Input = Input {
+					SourceOp = "LumaNoise",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 54, -147.788 } },
+		},
+		UnsharpMask1 = UnsharpMask {
+			Inputs = {
+				XSize = Input { Value = 2, },
+				Input = Input {
+					SourceOp = "LumaBlur",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 54.6667, -220.515 } },
+		},
+		Emboss1 = ofx.com.blackmagicdesign.resolvefx.Emboss {
+			Inputs = {
+				Source = Input {
+					SourceOp = "UnsharpMask1",
+					Source = "Output",
+				},
+				embossStyle = Input { Value = FuID { "EMBOSS_MODE_EMBOSSOVER" }, },
+				power = Input { Value = 2, },
+				angle = Input { Value = 0, },
+				enableChannels = Input { Value = 1, },
+				useRedChannel = Input { Value = 1, },
+				useGreenChannel = Input { Value = 1, },
+				useBlueChannel = Input { Value = 1, },
+				blendGroup = Input { Value = 0, },
+				blendIn = Input { Value = 1, },
+				blend = Input { Value = 0, },
+				ignoreContentShape = Input { Value = 0, },
+				legacyIsProcessRGBOnly = Input { Value = 0, },
+				IsNoTemporalFramesReqd = Input { Value = 0, },
+				refreshTrigger = Input { Value = 1, },
+				srcProcessingAlphaMode = Input { Value = -1, },
+				dstProcessingAlphaMode = Input { Value = -1, },
+				resolvefxVersion = Input { Value = "1.0", }
+			},
+			ViewInfo = OperatorInfo { Pos = { 49.9565, -307.293 } },
+		},
+		MediaIn1 = Loader {
+			ExtentSet = true,
+			CustomData = {
+				MediaProps = {
+					MEDIA_AUDIO_TRACKS_DESC = {
+						{
+							MEDIA_AUDIO_BIT_DEPTH = 32,
+							MEDIA_AUDIO_FRAME_RATE = 24,
+							MEDIA_AUDIO_NUM_CHANNELS = 2,
+							MEDIA_AUDIO_SAMPLE_RATE = 48000,
+							MEDIA_AUDIO_START_TIME = 0,
+							MEDIA_AUDIO_TRACK_ID = "Timeline Audio",
+							MEDIA_AUDIO_TRACK_NAME = "Timeline Audio [Timeline 1]"
+						}
+					},
+					MEDIA_AUDIO_TRACKS_NUM = 1,
+					MEDIA_HAS_AUDIO = true,
+					MEDIA_HEIGHT = 480,
+					MEDIA_IS_SOURCE_RES = false,
+					MEDIA_MARK_IN = 0,
+					MEDIA_MARK_OUT = 119,
+					MEDIA_NAME = "Adjustment Clip",
+					MEDIA_NUM_FRAMES = 120,
+					MEDIA_PAR = 1,
+					MEDIA_SRC_FRAME_RATE = 24,
+					MEDIA_START_FRAME = 0,
+					MEDIA_WIDTH = 640,
+				},
+			},
+			Inputs = {
+				GlobalOut = Input { Value = 119, },
+				AudioTrack = Input { Value = FuID { "Timeline Audio" }, },
+				Layer = Input { Value = "0", },
+				ClipTimeEnd = Input { Value = 119, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				DeepOutputMode = Input {
+					Value = 0,
+					Disabled = true,
+				},
+				LeftAudio = Input {
+					SourceOp = "Left",
+					Source = "Data",
+				},
+				RightAudio = Input {
+					SourceOp = "Right",
+					Source = "Data",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 60.6569, 58.9281 } },
+			Version = 1,
+			Clips = {
+				Clip {
+					ID = "Clip1",
+					Length = 120,
+					LengthSetManually = true,
+					GlobalEnd = 119,
+					TrimOut = 119,
+				}
+			}
+		},
+		Left = AudioDisplay {
+		},
+		Right = AudioDisplay {
+			CtrlWZoom = false,
+		},
+		JPEGDamage1 = ofx.com.blackmagicdesign.resolvefx.JPEGDamage {
+			Inputs = {
+				Source = Input {
+					SourceOp = "MediaIn1",
+					Source = "Output",
+				},
+				ofxQuality = Input { Value = 75, },
+				Resolution = Input { Value = 1, },
+				AspectRatio = Input { Value = 1.75, },
+				FrequencyScale = Input { Value = 3, },
+				FrequencyType = Input { Value = FuID { "FREQUENCY_TYPE_XY" }, },
+				BlendAmount = Input { Value = 0, },
+				blendGroup = Input { Value = 0, },
+				blendIn = Input { Value = 1, },
+				blend = Input { Value = 0, },
+				ignoreContentShape = Input { Value = 0, },
+				legacyIsProcessRGBOnly = Input { Value = 0, },
+				IsNoTemporalFramesReqd = Input { Value = 0, },
+				refreshTrigger = Input { Value = 1, },
+				srcProcessingAlphaMode = Input { Value = -1, },
+				dstProcessingAlphaMode = Input { Value = -1, },
+				resolvefxVersion = Input { Value = "1.1", }
+			},
+			ViewInfo = OperatorInfo { Pos = { 56, -10.2121 } },
+		},
+		FastNoise1 = FastNoise {
+			Inputs = {
+				GlobalOut = Input { Value = 119, },
+				Width = Input { Value = 640, },
+				Height = Input { Value = 480, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Detail = Input { Value = 1, },
+				Contrast = Input { Value = 5, },
+				Brightness = Input { Value = -0.15, },
+				LockXY = Input { Value = 0, },
+				XScale = Input { Value = 100, },
+				YScale = Input { Value = 100, },
+				SeetheRate = Input { Value = 100, },
+				Type = Input { Value = 1, },
+				Gradient = Input {
+					Value = Gradient {
+						Colors = {
+							[0] = { 1, 0, 0, 1 },
+							[0.17910447761194] = { 1, 1, 0, 1 },
+							[0.333333333333333] = { 0, 1, 0, 1 },
+							[0.532338308457711] = { 0, 1, 1, 1 },
+							[0.741293532338308] = { 0, 0, 1, 1 },
+							[1] = { 1, 0, 1, 1 }
+						}
+					},
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 193.667, -141.803 } },
+		},
+		ChromaNoise = Merge {
+			NameSet = true,
+			Inputs = {
+				Blend = Input { Value = 0.1, },
+				Background = Input {
+					SourceOp = "JPEGDamage1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "FastNoise1",
+					Source = "Output",
+				},
+				Gain = Input { Value = 0.5, },
+				PerformDepthMerge = Input { Value = 0, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 191.333, -220.515 } },
+		},
+		ChromaBlur = Blur {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				LockXY = Input { Value = 0, },
+				XBlurSize = Input { Value = 15, },
+				YBlurSize = Input { Value = 5, },
+				Input = Input {
+					SourceOp = "ChromaNoise",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 186.16, -313.523 } },
+		},
+		ChromaAndLuma = Merge {
+			NameSet = true,
+			Inputs = {
+				Background = Input {
+					SourceOp = "Emboss1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "ChromaBlur",
+					Source = "Output",
+				},
+				Center = Input { Value = { 0.51, 0.5 }, },
+				ApplyMode = Input { Value = FuID { "Color" }, },
+				PerformDepthMerge = Input { Value = 0, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 116.734, -357.976 } },
+		},
+		FastNoise3 = FastNoise {
+			Inputs = {
+				GlobalOut = Input { Value = 119, },
+				Width = Input { Value = 640, },
+				Height = Input { Value = 480, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Detail = Input { Value = 10, },
+				LockXY = Input { Value = 0, },
+				XScale = Input { Value = 0, },
+				YScale = Input { Value = 20, },
+				SeetheRate = Input { Value = 10, },
+				Inverted = Input { Value = 1, }
+			},
+			ViewInfo = OperatorInfo { Pos = { 222.667, 52.8182 } },
+		},
+		HorizontalJitter = Displace {
+			CtrlWZoom = false,
+			NameSet = true,
+			Inputs = {
+				Type = Input { Value = 1, },
+				XOffset = Input { Value = -0.5, },
+				XRefraction = Input { Value = 0.0025, },
+				RefractionStrength = Input { Value = 0, },
+				Input = Input {
+					SourceOp = "ChromaAndLuma",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "FastNoise3",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 516.361, -127.664 } },
+		},
+		MediaOut1 = Saver {
+			Inputs = {
+				Index = Input { Value = "0", },
+				Input = Input {
+					SourceOp = "HorizontalJitter",
+					Source = "Output",
+				}
+			},
+			ViewInfo = OperatorInfo { Pos = { 886, 91.9242 } },
+		}
+	},
+	Frames = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			PresetName = "Default",
+			Left = 0,
+			Top = 0,
+			Width = 3840,
+			Height = 1975,
+			ZoneInfo = { AuxRight = { Expanded = true }, ["!Left"] = {
+				}, AuxLeft = { Expanded = true }, Right = { Expanded = true, }, Left = { Expanded = false, }, ["!Right"] = {
+				} },
+			ViewInfo = { Viewer1 = { Show = true, RatioX = 1.05242070116861, RatioY = 0.01, }, InnerLeft = { PixelX = 420, RatioY = 100, }, MainSplit = { RatioX = 100, RatioY = 0.997398543184184, }, CenterSplit = { RatioX = 1, RatioY = 100, }, Viewer2 = { Show = true, RatioX = 0.947579298831386, RatioY = 0.01, }, Comments = { Show = false }, Time = { Show = true, RatioX = 100, }, InnerColumns = { RatioX = 100, RatioY = 2.00260145681582, }, Keyframes = { Show = false, }, LayoutStrip = { Show = true, }, Inspector = { Show = true, RatioX = 100, RatioY = 1, }, InnerRight = {
+				}, MediaPool = { Show = false, }, OuterColumns = { RatioX = 100, RatioY = 1, }, Effects = { Show = true, Adjust = false, RatioX = 1, RatioY = 100, MRU = 1 }, ActionStrip = { Show = true, RatioX = 100, }, Metadata = { Show = false, }, OuterLeft = {
+				}, ViewerSplit = { RatioX = 100, RatioY = 1, }, Nodes = { Show = true, RatioX = 1, RatioY = 100, }, OuterRight = { PixelX = 420, RatioY = 100, }, Clips = { Show = false, }, Spline = { Show = false, } },
+			Views = ordered() {
+				MediaPool = "MediaPoolView",
+				Effects = MultiView {
+					Active = "EffectView",
+					ViewList = ordered() {
+						EffectView = "EffectView"
+					},
+				},
+				Nodes = MultiView {
+					Active = "FlowView",
+					ViewList = ordered() {
+						FlowView = "FlowView"
+					},
+					FlowView = FlowView {
+						Flags = {
+							AutoHideNavigator = true,
+							ForceSource = true,
+							AutoSnap = true,
+							RemoveRouters = true
+						},
+						NavigatorSize = { 200, 140 },
+						Direction = "Horizontal",
+						PipeStyle = "Direct",
+						RootScale = 0.707107,
+						RootOffset = { 911.363, 405.499 }
+					}
+				},
+				Keyframes = MultiView {
+					Active = "TimelineView",
+					ViewList = ordered() {
+						TimelineView = "TimelineView"
+					},
+					TimelineView = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 232, Bottom = 324 },
+							ScaleX = 0.736170212765958,
+							OffsetX = -19.1404255319149,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = false,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none"
+						},
+						Spreadsheet = { LeftPos = 232, Visible = false }
+					}
+				},
+				Spline = MultiView {
+					Active = "SplineView",
+					ViewList = ordered() {
+						SplineView = "SplineEditorView"
+					},
+					SplineView = SplineEditorView {
+						LeftPos = 264,
+						ScaleX = 0.2,
+						ScaleY = 0.00334448160535117,
+						OffsetX = -3.4,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = false,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All"
+					}
+				},
+				Inspector = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView"
+					},
+				},
+				Viewer1 = MultiView {
+					Active = "LeftView",
+					ViewList = ordered() {
+						LeftView = "PreviewContainer"
+					},
+				},
+				Viewer2 = MultiView {
+					Active = "RightView",
+					ViewList = ordered() {
+						RightView = "PreviewContainer"
+					},
+				},
+				Time = "TimeView",
+				ActionStrip = "ActionStripView",
+				LayoutStrip = "LayoutStripView",
+				Clips = "ClipsView",
+				Metadata = "MetadataView"
+			},
+			Layout = {
+				{ ID = "LayoutStrip", FixedY = 36, Resolve = false, Flat = true },
+				{
+					{
+						{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+						{ ID = "Effects", RatioX = 1 },
+						Zone = "Left",
+						Rows = 2,
+						PaneID = "OuterLeft",
+						PixelX = 420
+					},
+					{
+						{
+							{
+								{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+								{ ID = "Effects", RatioX = 1 },
+								PaneID = "InnerLeft",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Left"
+							},
+							{
+								{
+									{ ID = "Viewer1", RatioY = 0.01, RatioX = 1 },
+									{ ID = "Viewer2", RatioX = 1 },
+									RatioY = 1,
+									Columns = 2,
+									PaneID = "ViewerSplit"
+								},
+								{ ID = "Time", FixedY = 83, Flat = true },
+								RatioX = 1,
+								Rows = 2
+							},
+							{
+								{ ID = "Inspector", RatioY = 1 },
+								{ ID = "Metadata", RatioY = 1, Fusion = false },
+								PaneID = "InnerRight",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Right"
+							},
+							RatioY = 2,
+							Columns = 3,
+							PaneID = "InnerColumns"
+						},
+						{ ID = "ActionStrip", FixedY = 50, Flat = true },
+						{
+							{ ID = "Nodes", RatioX = 1 },
+							{ ID = "Spline", RatioX = 1 },
+							{ ID = "Keyframes", RatioX = 1 },
+							RatioY = 1,
+							Columns = 3,
+							PaneID = "MainSplit"
+						},
+						{ Fusion = false, ID = "Clips", LARGE_FixedY = 160, MEDIUM_FixedY = 138, SMALL_FixedY = 110 },
+						RatioX = 1,
+						Rows = 4,
+						PaneID = "CenterSplit"
+					},
+					{
+						{ ID = "Inspector", RatioY = 1 },
+						{ ID = "Metadata", RatioY = 1, Fusion = false },
+						Zone = "Right",
+						Rows = 2,
+						PaneID = "OuterRight",
+						PixelX = 420
+					},
+					RatioY = 1,
+					Columns = 3,
+					PaneID = "OuterColumns"
+				},
+				RatioX = 1,
+				Rows = 2,
+				RatioY = 1
+			},
+			TopBar = {
+				Left = { "Left", "MediaPool", "Effects", "Clips", "Nodes", "Console" },
+				Right = { "Spline", "Keyframes", "Metadata", "Inspector", "Right" }
+			}
+		}
+	},
+	Prefs = {
+		Comp = {
+			Paths = {
+				Map = {
+					["ResolveCaches:"] = "C:\\Users\\Rayyan Chowdhury\\Videos\\CacheClip\\2cfc7c8c-a4d1-4bcf-8332-302e42fe0057\\672e1846-a3ec-4b46-95e9-36ae8e85034d\\23232d6d-9571-4ed7-86bb-0135bd44f102\\Fusion",
+				},
+			},
+			Interactive = {
+				Proxy = {
+					Scale = 1,
+				},
+			},
+			FrameFormat = {
+				GuideRatio = 1.77777777777778,
+				DepthFull = 3,
+				DepthPreview = 3,
+				Rate = 24,
+				Width = 640,
+				Height = 480,
+				DepthInteractive = 3,
+			},
+			Views = {
+				RightView = {
+					Viewer = {
+						Layer = ":Default",
+					},
+				},
+				LeftView = {
+					Viewer = {
+						Layer = ":Default",
+					},
+				},
+				View1 = {
+				},
+			},
+			Unsorted = {
+				GlobalEnd = 119
+			},
+		}
+	},
+}
