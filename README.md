@@ -1,2 +1,2 @@
-# VHS-For-Davinci-Resolve
+# VHS-For-Video-Editing
 Cerate VHS Effect Gives You 80s
